@@ -1,0 +1,44 @@
+Plan
+
+1. Locked room puzzle
+    - To win the player must open the door before the time runs out
+        - The door has a single word conbination lock. 
+        - To win the player must guess the correct word and open the door
+    - Mayan Tomb themed
+
+2. The Clock
+    - The player would have a limited time to finish the puzzle
+    - Time will only pass after the player completes an action
+    - Once the time runs out, the player will be unable to escape giving them a game over
+
+3. Actions
+    - In the room there would be several items that the player can collect and use on the enviroment and other objects
+    - Each action will take a specified amount of time consuming time from "The Clock"
+    1. The Dictionary
+        - In here the player can enter different "Mayan" words and the Dictionary
+        - The words within the dictionary will correspond to different Mayan zodiac symbols
+        - e.g. "Topolatec" = "Moon" 
+    2. The Rock (Dwane Johnson)
+        - This is an item the player needs and it's found by "Look"ing around the room 
+        - It needs to be used to break other items and reveal their contents
+        - It will serve to un-do combinations or break items
+        - "Broken" items can no longer be used
+    3. The Door
+        - The player will have to rotate the wheel to select the correct zodiac symbols
+        - It takes 5 minutes to see if the answer is correct.
+            - "You hear a rumble, some hidden mechanism seems to be doing... something"
+            - "The rumbling stops and after a few minutes nothing has happened. You are not confident you had the right answer."
+    4. The Table
+        - in the locked room there is a table that the player can use to combine items to get a result
+        - correct item combinations will lead into a solution letter or a new item
+
+4. Inventory
+    - class with the purpose of holding the players inventory information
+
+5. UI and UX
+    - Using a clasic style for a txt adv, but more modern looking
+    - Ascii to add images
+    - Web or App?
+        - Ideally a website that has everything within it
+        - Low priority but choice must be made (by sep 25?)
+

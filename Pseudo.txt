@@ -1,0 +1,23 @@
+Imports
+
+Classes
+    Inventory Class
+    inventory = array [None]
+
+        Add(item = item to be added)
+            inventory.append(item)
+            print(you place *item* in your inventory)
+            return(inventory)
+
+    Timer Class
+    Time = 30 min
+
+        Tick(passedTime = Time that has passed)
+        Time = Time - passedTime
+        print(you have *time* mnutes left)
+        return(time)
+
+
+
+
+Meat and potatoes
