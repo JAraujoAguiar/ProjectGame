@@ -2,13 +2,17 @@ import time
 #import tkFont
 import pandas as pd
 from tkinter import *
+from tkinter import messagebox
 
 
 window = Tk()
 window.title("Tomb Stuck")
 window.configure(background="black")
+window.geometry('250x200')
 #font = tkFont.Font ()
-Label (window, bg="black").grid(row=10, column=5)
+
+def enter(answer):
+    answer = Game.answer.get()
 
 #-------------------------Classes----------------------#
 class Leaderboard: #Handles the input to 
@@ -41,7 +45,7 @@ class Timer: #Handles matters of time
         if Timer.time < 0:
             Timer.time = 0
             Timer.Passing
-            Label(window, text=f"\nYou have {Timer.time} minutes left\n")
+            Label(window, text=f"\nYou have {Timer.time} minutes left\n", bg='black', fg="white", font="none 12 bold").grid(row=Game.row, column=0, sticky=W)
             Timer.Passing
             return(Timer.time) 
 
@@ -65,7 +69,7 @@ class Game: #Handles the game interactions and responses
     ending = True
     score = Timer.time
     answer = None
-    row = None
+    row = 0
     
     def Print(phrase):
         Timer.Passing()
@@ -74,9 +78,11 @@ class Game: #Handles the game interactions and responses
         return(Game.row)
 
     def Question(question):
-        Game.answer = None
-        Timer.Passing()
-        Game.answer = input(f'\n{question}\n').lower().strip()
+        Game.Print(question)
+        Game.answer = Entry(window)
+        Game.answer.bind('<Return>', enter)
+        #Game.answer.pack()
+        #Game.answer = input(f'\n{question}\n')
         return(Game.answer)
 
     def Over():
@@ -87,7 +93,7 @@ class Game: #Handles the game interactions and responses
         Leaderboard.Stamp(Game.name, Game.ending, Game.score)
     
     def BadAnswer():
-        print("\nYou can't seem to think straight... \n")
+        Game.Print("\nYou can't seem to think straight... \n")
         seed = Game.Over()
 
     def Drown():
