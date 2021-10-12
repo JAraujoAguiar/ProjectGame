@@ -8,12 +8,12 @@ from tkinter import messagebox
 window = Tk()
 window.title("Tomb Stuck")
 window.configure(background="black")
-window.geometry('250x200')
+#window.geometry('500*250')
 #font = tkFont.Font ()
 
-def enter(answer):
-    answer = Game.answer.get()
 
+def enter():
+    return
 #-------------------------Classes----------------------#
 class Leaderboard: #Handles the input to 
     name = ['Jesus A']
@@ -26,6 +26,7 @@ class Leaderboard: #Handles the input to
         Leaderboard.score.append(score)
         leaderboard = pd.DataFrame({'Name': Leaderboard.name, 'Ending': Leaderboard.ending, 'Score': Leaderboard.score})
         #leaderboard = leaderboard.sort([score], ascending=[1])
+        Game.Print(f'Leaderboard: \n \n {leaderboard}')
         print(f'Leaderboard: \n \n {leaderboard}')
 
 
@@ -69,6 +70,7 @@ class Game: #Handles the game interactions and responses
     ending = True
     score = Timer.time
     answer = None
+    input = None
     row = 0
     
     def Print(phrase):
@@ -79,11 +81,18 @@ class Game: #Handles the game interactions and responses
 
     def Question(question):
         Game.Print(question)
-        Game.answer = Entry(window)
-        Game.answer.bind('<Return>', enter)
-        #Game.answer.pack()
+        Game.input = Entry(window, bg='black', fg="white", font="none 12 bold")
+        Game.input.grid(row=Game.row, column=0, sticky=W)
+        Game.input.bind('<Return>', enter)
+        print(Game.input)
+        Game.answer = Game.input
+        if Game.answer == None:
+            window.mainloop()
+        else:
         #Game.answer = input(f'\n{question}\n')
-        return(Game.answer)
+        #answer = Game.answer
+            Game.row = Game.row + 2
+            return(Game.answer)
 
     def Over():
         Timer.Ticking(Timer.time, 30)
