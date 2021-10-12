@@ -6,25 +6,26 @@ from tkinter import messagebox
 
 
 window = Tk()
-window.title("Tomb Stuck")
-window.configure(background="black")
+
 #window.geometry('500*250')
 #font = tkFont.Font ()
 
-
+'''
 def enter():
-    return
+    answer = Game.answer.get()
+    return(answer)
+'''
 #-------------------------Classes----------------------#
 class Leaderboard: #Handles the input to 
     name = ['Jesus A']
     ending = [True]
     score = ['30'] 
 
-    def Stamp(name, ending, score):
-        Leaderboard.name.append(name)
-        Leaderboard.ending.append(ending)
-        Leaderboard.score.append(score)
-        leaderboard = pd.DataFrame({'Name': Leaderboard.name, 'Ending': Leaderboard.ending, 'Score': Leaderboard.score})
+    def Stamp(self, name, ending, score):
+        self.name.append(name)
+        self.ending.append(ending)
+        self.score.append(score)
+        leaderboard = pd.DataFrame({'Name': self.name, 'Ending': self.ending, 'Score': self.score})
         #leaderboard = leaderboard.sort([score], ascending=[1])
         Game.Print(f'Leaderboard: \n \n {leaderboard}')
         print(f'Leaderboard: \n \n {leaderboard}')
@@ -34,14 +35,14 @@ class Inventory: #Handles inventory management
     inventory = [None]
     
     def AddInventory(self, item):
-        Inventory.inventory.append(item)
+        self.inventory.append(item)
         print(f"\nYou place {item} in your inventory\n")
-        return(Inventory.inventory)
+        return(self.inventory)
 
 class Timer: #Handles matters of time
     time = 30
     
-    def Ticking(self, tick):
+    def Ticking(tick):
         Timer.time = Timer.time - tick
         if Timer.time < 0:
             Timer.time = 0
@@ -65,7 +66,7 @@ class Timer: #Handles matters of time
     def Passing():
         time.sleep(3)
 
-class Game: #Handles the game interactions and responses
+class Game(Tk): #Handles the game interactions and responses
     name = None
     ending = True
     score = Timer.time
@@ -73,78 +74,77 @@ class Game: #Handles the game interactions and responses
     input = None
     row = 0
     
-    def Print(phrase):
+    def MainLoop(self):
+       super().mainloop()
+       self.Start() 
+
+
+    def Print(self, phrase):
         Timer.Passing()
-        Label (window, text=f'\n{phrase}\n\n', bg='black', fg="white", font="none 12 bold").grid(row=Game.row, column=0, sticky=W)
-        Game.row = Game.row + 1
-        return(Game.row)
+        Label (self, text=f'\n{phrase}\n\n', bg='black', fg="white", font="none 12 bold").grid(row=Game.row, column=0, sticky=W)
+        self.row = self.row + 1
+        return(self.row)
 
-    def Question(question):
-        Game.Print(question)
-        Game.input = Entry(window, bg='black', fg="white", font="none 12 bold")
-        Game.input.grid(row=Game.row, column=0, sticky=W)
-        Game.input.bind('<Return>', enter)
-        print(Game.input)
-        Game.answer = Game.input
-        if Game.answer == None:
-            window.mainloop()
-        else:
-        #Game.answer = input(f'\n{question}\n')
-        #answer = Game.answer
-            Game.row = Game.row + 2
-            return(Game.answer)
+    def Question(self, question):
+        self.Print(question)
+        self.input = Entry(bg='black', fg="white", font="none 12 bold")
+        self.input.grid(row=self.row, column=0, sticky=W)
+        self.input.bind('<Return>', enter)
+        print(self.input)
+        self.answer = self.input
 
-    def Over():
+
+    def Over(self):
         Timer.Ticking(Timer.time, 30)
-        Game.Print("Your mind drifts away as the current washes your body away...")
-        Game.Print("GAME OVER")
-        Game.ending = False
-        Leaderboard.Stamp(Game.name, Game.ending, Game.score)
+        self.Print("Your mind drifts away as the current washes your body away...")
+        self.Print("GAME OVER")
+        self.ending = False
+        Leaderboard.Stamp(self.name, self.ending, self.score)
     
-    def BadAnswer():
-        Game.Print("\nYou can't seem to think straight... \n")
-        seed = Game.Over()
+    def BadAnswer(self):
+        self.Print("\nYou can't seem to think straight... \n")
+        seed = self.Over()
 
-    def Drown():
-        Game.Print("Water has filled out the room")
-        Game.Print("In a futile effort to survive you cling to the last air pocket in the room")
-        Game.Print("It is quickly filled out with water and so are your lungs")
-        seed = Game.BadAnswer()
+    def Drown(self):
+        self.Print("Water has filled out the room")
+        self.Print("In a futile effort to survive you cling to the last air pocket in the room")
+        self.Print("It is quickly filled out with water and so are your lungs")
+        seed = self.BadAnswer()
 
-    def Win():
-        Game.Print("You crawl out of the hole you made in the wall...")
-        Game.Print("Although you still don't know how you got there...")
-        Game.Print("However, soon after reaching the surface...")
-        Game.Print("You realize why you were there.")
-        Game.Print("TO BE CONTINUED")
-        Leaderboard.Stamp(Game.name, Game.ending, Game.score)
+    def Win(self):
+        self.Print("You crawl out of the hole you made in the wall...")
+        self.Print("Although you still don't know how you got there...")
+        self.Print("However, soon after reaching the surface...")
+        self.Print("You realize why you were there.")
+        self.Print("TO BE CONTINUED")
+        Leaderboard.Stamp(self.name, self.ending, self.score)
 
 
-    def TimerCheck():
+    def TimerCheck(self):
         if Timer.time <= 0:
-            Game.Drown()
+            self.Drown()
         else:
             pass
 
-    def Start():
-        Game.Print(f"Slowly you come back to. Your head is throbbing, your body aches and your eyes are heavy...")
-        Game.Question("Would you open your eyes? (yes/no)")
-        if Game.answer == "yes":
-            Game.Q1()
-        elif Game.answer == "no":
-            Game.Over()
+    def Start(self):
+        self.Print(f"Slowly you come back to. Your head is throbbing, your body aches and your eyes are heavy...")
+        self.Question("Would you open your eyes? (yes/no)")
+        if self.answer == "yes":
+            self.Q1()
+        elif self.answer == "no":
+            self.Over()
         else:
-            Game.BadAnswer()
+            self.BadAnswer()
         
-    def Q1():
+    def Q1(self):
         Timer.Ticking(Timer.time, 0)
-        Game.Print("It's dark, however a small crack on the ceiling gives just enough light to make your sorroundings...")
-        Game.Print("You are able to hear water rushing in from somewhere you cannot see...")
+        self.Print("It's dark, however a small crack on the ceiling gives just enough light to make your sorroundings...")
+        self.Print("You are able to hear water rushing in from somewhere you cannot see...")
         Timer.Passing()
-        Game.Question("What would you like to do? (Look around/Close eyes)")
+        self.Question("What would you like to do? (Look around/Close eyes)")
 
-        if Game.answer == "look around":
-            Game.Q2a()
+        if self.answer == "look around":
+            self.Q2a()
 
         elif Game.answer == "close eyes":
             Game.Over()
@@ -188,7 +188,7 @@ class Game: #Handles the game interactions and responses
             Game.Q2a()
         
         elif Game.answer == "what is a macuahuitl?":
-            Game.Print("A macuahuitl is a weapon, a wooden club with several embedded obsidian blades. The name is derived from the Nahuatl language and means hand-wood. Its sides are embedded with prismatic blades traditionally made from obsidian. Obsidian is capable of producing an edge sharper than high quality steel razor blades. The macuahuitl was a standard close combat weapon.")
+            Game.Print("A macuahuitl is a weapon, a wooden club with several embedded obsidian blades. \nThe name is derived from the Nahuatl language and means hand-wood. \nIts sides are embedded with prismatic blades traditionally made from obsidian. \nObsidian is capable of producing an edge sharper than high quality steel razor blades. \nThe macuahuitl was a standard close combat weapon.")
             Timer.Ticking(Timer.time, 30)
 
         else:
@@ -225,7 +225,9 @@ class Game: #Handles the game interactions and responses
         
 #-------------------------GameInit----------------------#
 
-game = Game
+game = Game()
+game.title("Tomb Stuck")
+game.configure(background="black")
 game.name = game.Question('What is your name?')
 game.Start()
-window.mainloop()
+game.mainloop()
