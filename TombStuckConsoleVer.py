@@ -1,19 +1,46 @@
 import time
 import pandas as pd
+import sqlite3
+
+leaderboard = sqlite3.connect('leaderboard.db')
+
+#-------------------------Script------------------------#
+scriptOver = ["Your mind drifts away as the current washes your body away...", "GAME OVER"]
+scriptBadAnswer = ["You can't seem to think straight..."]
+scriptDrown = ["Water has filled out the room...", 'In a futile effort to survive you cling to the last air pocket in the room...', 'The space is quickly filled out with water and so are your lungs...']    
+scriptWin = ["You crawl out of the hole you made in the wall...", "Although you still don't know how you got there...", "Soon after reaching the surface...", "You realize why you were there.", "TO BE CONTINUED"]
+scriptGen0 = ["You don't see anything else that might be relevant"]
+scriptGen1 = ["You see a Macuahuitl lying on the floor..."]
+scriptGen2 = ["A macuahuitl is a weapon, a wooden club with several embedded obsidian blades. The name is derived from the Nahuatl language and means hand-wood. Its sides are embedded with prismatic blades traditionally made from obsidian. Obsidian is capable of producing an edge sharper than high quality steel razor blades. The macuahuitl was a standard close combat weapon."]
+scriptGen3 = ["You try for a good while to hit the wall but it seems that your bare hands can't do much"]
+script0 = ["Slowly, you come back to...", "Your head is throbbing, your body aches and your eyes are heavy..."]
+question0 = ["Would you open your eyes? (yes/no)"]
+script1 = ["It's dark, however a small crack on the ceiling gives just enough light to make your sorroundings...", "You are able to hear water rushing in from somewhere you cannot see..."]
+question1 = ["What would you like to do? (Look around/Close eyes)"]
+script2a = ["You can make out in the darkness a section of the wall that seems to have some loose rocks..."]
+question2a = ["What would you like to do? (Look around/Close eyes)"]
+script2b = ["You see a Macuahuitl lying on the floor..."]
+question2b = ["What would you do? (Take/Go back)"]
+script3a = ["You see that water trickles through this wall...", "You think that if you hit the wall hard enough you can bring it down..."]
+question3a = ["What would you do? (Hulk Smash/Keep Looking)"]
+script3b = ["You use the Macuahuitl to smash the wall in with all your might...", "The wall gives away, revealing a passage to the outside..."]
 
 #-------------------------Classes----------------------#
-class Leaderboard: #Handles the input to 
+class Leaderboard: #Stores and appends to the leaderboard
     name = ['Jesus A']
     ending = [True]
     score = ['30'] 
 
     def Stamp(name, ending, score):
+        leaderboard.execute(f"INSERT INTO leaderboard (name,ending,score) VALUES ({name},{ending},{score})")
+        print(leaderboard)
+        '''
         Leaderboard.name.append(name)
         Leaderboard.ending.append(ending)
         Leaderboard.score.append(score)
         leaderboard = pd.DataFrame({'Name': Leaderboard.name, 'Ending': Leaderboard.ending, 'Score': Leaderboard.score})
         print(f'Leaderboard: \n \n {leaderboard}')
-
+        '''
 
 class Inventory: #Handles inventory management
     inventory = [None]
@@ -48,144 +75,154 @@ class Timer: #Handles matters of time
 
     def Passing():
         time.sleep(3)
-
 class Game: #Handles the game interactions and responses
+     
     name = None
     ending = True
     score = Timer.time
     answer = None
-
-    def Print(phrase):
-        Timer.Passing()
-        print(f'\n{phrase}\n')
-
-    def Question(question):
-        Game.answer = input(f'\n{question}\n')
-        return(Game.answer)
-
-    def Over():
-        Timer.Ticking(Timer.time, 30)
-        Game.Print("Your mind drifts away as the current washes your body away...")
-        Game.Print("GAME OVER")
-        Game.ending = False
-        Leaderboard.Stamp(Game.name, Game.ending, Game.score)
+    inventory = Inventory.inventory
     
-    def BadAnswer():
-        Game.Print("\nYou can't seem to think straight... \n")
-        seed = Game.Over()
+    def __init__(self):
+        self.name = Game.name
+        self.ending = Game.ending
+        self.score = Game.score
+        self.answer = Game.answer
+        self.inventory = Game.inventory
+        self.scriptOver = scriptOver
+        self.scriptBadAnswer = scriptBadAnswer
+        self.scriptDrown = scriptDrown
+        self.scriptWin = scriptWin
+        self.scriptGen0 = scriptGen0
+        self.scriptGen1 = scriptGen1
+        self.scriptGen2 = scriptGen2
+        self.scriptGen3 = scriptGen3
+    
+    def PrintEX(self, script):
+        Timer.Passing()
+        for phrase in script:
+            print(f'\n{phrase}\n')
+            Timer.Passing()
 
-    def Drown():
-        Game.Print("Water has filled out the room")
-        Game.Print("In a futile effort to survive you cling to the last air pocket in the room")
-        Game.Print("It is quickly filled out with water and so are your lungs")
-        seed = Game.BadAnswer()
+    def QuestionEX(self, question):
+        self.answer = input(f'\n{question}\n').lower
+        return(self.answer)
 
-    def Win():
-        Game.Print("You crawl out of the hole you made in the wall...")
-        Game.Print("Although you still don't know how you got there...")
-        Game.Print("However, soon after reaching the surface...")
-        Game.Print("You realize why you were there.")
-        Game.Print("TO BE CONTINUED")
-        Leaderboard.Stamp(Game.name, Game.ending, Game.score)
+    def Over(self):
+        Timer.Ticking(Timer.time, 30)
+        self.PrintEX(self.scriptOver)
+        self.ending = False
+        Leaderboard.Stamp(self.name, self.ending, self.score)
 
+    def BadAnswer(self):
+        self.PrintEX(self.scriptBadAnswer)
+        next = self.Over()
 
-    def TimerCheck():
-        if Timer.time <= 0:
-            Game.Drown()
+    def Drown(self):
+        self.PrintEX(self.scriptDrown)
+        next = self.Over()
+    
+    def Win(self):
+        self.PrintEX(self.scriptWin)
+        Leaderboard.Stamp(self.name, self.ending, self.score)
+   
+    def TimerCheck(self):
+        if self.score <= 0:
+            self.Drown()
         else:
             pass
-
-    def Start():
-        Game.Print(f"Slowly you come back to. Your head is throbbing, your body aches and your eyes are heavy...")
-        Game.Question("Would you open your eyes? (yes/no)")
-        if Game.answer == "yes":
-            Game.Q1()
-        elif Game.answer == "no":
-            Game.Over()
-        else:
-            Game.BadAnswer()
-        
-    def Q1():
-        Timer.Ticking(Timer.time, 0)
-        Game.Print("It's dark, however a small crack on the ceiling gives just enough light to make your sorroundings...")
-        Game.Print("You are able to hear water rushing in from somewhere you cannot see...")
-        Timer.Passing()
-        Game.Question("What would you like to do? (Look around/Close eyes)")
-
-        if Game.answer == "look around":
-            Game.Q2a()
-
-        elif Game.answer == "close eyes":
-            Game.Over()
-
-        else:
-            Game.BadAnswer()
     
-    def Q2a():
-        Game.TimerCheck()
+    def Start(self, script, question):
+        self.PrintEX(script)
+        self.QuestionEX(question)
+        if self.answer == "yes":
+            pass
+        elif self.answer == "no":
+            self.Over()
+        else:
+            self.BadAnswer()
+
+    def Q1(self, script, question):
+        Timer.Ticking(Timer.time, 0)
+        self.PrintEX(script)
+        Timer.Passing()
+        self.QuestionEX(question)
+        if self.answer == "look around":
+            pass
+
+        elif self.answer == "close eyes":
+            self.Over()
+
+        else:
+            self.BadAnswer()
+
+    def Q2a(self, script, question):
+        self.TimerCheck()
         Timer.Ticking(Timer.time, 1)
-        Game.Print("You can make out in the darkness a section of the wall that seems to have some loose rocks...")
-        Game.Question("What would you do? (Get closer/Keep looking)")
+        self.PrintEX(script)
+        self.QuestionEX(question)
 
-        if Game.answer == "get closer":
-            Game.Q3()
+        if self.answer == "get closer":
+            pass
 
-        elif Game.answer == "keep looking":
-            if 'Macuahuitl' in Inventory.inventory:
-                Game.Print("You don't see anything else that might be relevant")
-                Game.Q2a()
+        elif self.answer == "keep looking":
+            if 'Macuahuitl' in self.inventory:
+                self.PrintEX(self.scriptGen0)
+                self.Q2a(script2a, question2a)
     
             else:
-                Game.Q2b()
+                self.Q2b(script2b, question2b)
 
         else:
-            Game.BadAnswer()
+            self.BadAnswer()       
+    
+    def Q2b(self, script, question):
+        self.TimerCheck()
+        Timer.Ticking(Timer.time, 1)
+        self.PrintEX(self.script2b)
+        self.QuestionEX(self.question2b)
 
-    def Q2b():
-        Game.TimerCheck()
-        Game.Print("You see a Macuahuitl lying on the floor...")
-        Game.Question("What would you do? (Take/Go back)")
-
-        if Game.answer == "take":
+        if self.answer == "take":
             Inventory.AddInventory('Macuahuitl')
-            Game.Q2a()
+            self.Q2a()
 
-        elif Game.answer == "go back":
-            Game.Q2a()
+        elif self.answer == "go back":
+            self.Q2a()
         
-        elif Game.answer == "what is a macuahuitl?":
-            Game.Print("A macuahuitl is a weapon, a wooden club with several embedded obsidian blades. The name is derived from the Nahuatl language and means hand-wood. Its sides are embedded with prismatic blades traditionally made from obsidian. Obsidian is capable of producing an edge sharper than high quality steel razor blades. The macuahuitl was a standard close combat weapon.")
+        elif self.answer == "what is a macuahuitl?":
+            self.PrintEX(self.scriptGen2)
             Timer.Ticking(Timer.time, 30)
 
         else:
-            Game.BadAnswer()
-        
-    def Q3():
-        Game.TimerCheck()
-        Game.Print('You see that water trickles through this wall...')
-        Game.Print('You think that if you hit the wall hard enough you can bring it down...')
-        Game.Question('What would you do? (Hulk Smash/Keep Looking)')
-        if Game.answer == "hulk smash":
-            if 'Macuahuitl' in Inventory.inventory:
-                Game.Print("You use the Macuahuitl to smash the wall in with all your might...")
-                Game.Print("The wall gives away, revealing a passage to the outside...")
-                Game.Win()
+            self.BadAnswer()
+    
+    def Q3(self, script, question):
+        self.TimerCheck()
+        self.PrintEX(script)
+        self.QuestionEX(question)
+        if self.answer == "hulk smash":
+            if 'Macuahuitl' in self.inventory:
+                self.PrintEX(script3b)
+                self.Win()
             else:
                 Timer.Ticking(Timer.Ticking, 10)
-                Game.Print("You try for a good while to hit the wall but it seems that your bare hands can't do much")
-                Game.Q3()
+                self.PrintEX(self.scriptGen3)
+                self.Q3(script3a, question3a)
 
-        elif Game.answer == "keep looking":
-            if 'Macuahuitl' in Inventory.inventory:
-                Game.Print("You don't see anything else that might be relevant")
-                Game.Q3()
+        elif self.answer == "keep looking":
+            if 'Macuahuitl' in self.inventory:
+                self.PrintEX(self.scriptGen0)
+                self.Q3(script3a, question3a)
 
             else:
-                Game.Q2b()
+                self.Q2b()
 
         
 #-------------------------GameInit----------------------#
 
-game = Game
-game.name = game.Question('What is your name?')
-game.Start()
+game = Game()
+game.Start(script0, question0)
+game.Q1(script1, question1)
+game.Q2a(script2a, question2a)
+game.Q3(script3a, question3a)
+
