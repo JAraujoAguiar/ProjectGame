@@ -1,6 +1,7 @@
 from time import sleep
-from tkinter.constants import NO
-import pandas as pd
+#import pandas as pd
+from tkinter import *
+from threading import Timer
 import sqlite3
 
 leaderboard = sqlite3.connect('leaderboard.db')
@@ -29,34 +30,23 @@ script3b = ["You use the Macuahuitl to smash the wall in with all your might..."
 answer = None
 #-------------------------Classes----------------------#
 class Leaderboard: #Stores and appends to the leaderboard
-    '''
     name = ['Jesus A']
     ending = [True]
     score = ['30'] 
-    '''
-    def Stamp(name, ending, score):
-<<<<<<< Updated upstream
-=======
 
-        global leaderboard.execute(f"INSERT INTO leaderboard (name,ending,score) VALUES ({name},{ending},{score})")
+    def Stamp(name, ending, score):
+        '''
+        INSERT INTO leaderboard (name, ending, score) VALUES (f"{name}, {ending}, {score}")
         query = leaderboard.execute("SELECT * From leaderboard")
         cols = [column[0] for column in query.description]
-        #results= pd.DataFrame.from_records(data = query.fetchall(), columns = cols)
-        #print(f'Leaderboard: \n \n {results}')
-        print(f'Leaderboard: \n \n {leaderboard}')
+        results= pd.DataFrame.from_records(data = query.fetchall(), columns = cols)
         '''
->>>>>>> Stashed changes
         Leaderboard.name.append(name)
         Leaderboard.ending.append(ending)
         Leaderboard.score.append(score)
-        leaderboard = pd.DataFrame({'Name': Leaderboard.name, 'Ending': Leaderboard.ending, 'Score': Leaderboard.score})
-<<<<<<< Updated upstream
-        print(f'Leaderboard: \n \n {leaderboard}')
-=======
-        '''
-
+        #leaderboard = pd.DataFrame({'Name': Leaderboard.name, 'Ending': Leaderboard.ending, 'Score': Leaderboard.score})
+        #print(f'Leaderboard: \n \n {leaderboard}')
         print(f'Leaderboard: \n \n {Leaderboard.name}{Leaderboard.ending}{Leaderboard.score}')
->>>>>>> Stashed changes
 
 
 class Inventory: #Handles inventory management

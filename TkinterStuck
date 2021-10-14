@@ -1,0 +1,34 @@
+from tkinter import *
+from threading import Timer
+
+
+window = Tk()
+window.title("TombStuck")
+text0 = Label(window, text="")
+text1 = Label(window, text="")
+text2 = Label(window, text="")
+text3 = Label(window, text="")
+text = [text0, text1, text2, text3]
+
+
+def wait():
+    pass
+
+class Game():
+
+    def __init__(self):
+        self.answer = None
+        self.timer = Timer(2, wait)
+
+    
+
+    def printer(self, script):
+        for lines in script:
+            self.timer.start()
+            line = text[n]
+            line['text'] = script[n]
+            n = n+1
+
+    
+    def q_selector(self, script, answer1, answer2, answer3):
+        self.printer(script)
