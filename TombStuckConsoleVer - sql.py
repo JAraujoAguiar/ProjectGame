@@ -1,9 +1,10 @@
 from time import sleep
-from tkinter.constants import NO
+#from tkinter.constants import NO
 import pandas as pd
 import sqlite3
 
-leaderboard = sqlite3.connect('leaderboard.db')
+conn = sqlite3.connect('leaderboard.db')
+c = conn.cursor()
 
 #-------------------------Script------------------------#
 scriptOver = ["Your mind drifts away as the current washes your body away...", "GAME OVER"]
@@ -21,7 +22,7 @@ question1 = "What would you like to do? (Look around/Close eyes)"
 script2a = ["You can make out in the darkness a section of the wall that seems to have some loose rocks..."]
 question2a = "What would you do? (Get closer/Keep looking)"
 script2b = ["You see a Macuahuitl lying on the floor..."]
-question2b = "What would you do? (Take/Go back)"
+question2b = "What would you do? (Take/Go Back/What is a Macuahuitl?)"
 script3a = ["You see that water trickles through this wall...", "You think that if you hit the wall hard enough you can bring it down..."]
 question3a = "What would you do? (Hulk Smash/Keep Looking)"
 script3b = ["You use the Macuahuitl to smash the wall in with all your might...", "The wall gives away, revealing a passage to the outside..."]
@@ -35,28 +36,20 @@ class Leaderboard: #Stores and appends to the leaderboard
     score = ['30'] 
     '''
     def Stamp(name, ending, score):
-<<<<<<< Updated upstream
-=======
-
-        global leaderboard.execute(f"INSERT INTO leaderboard (name,ending,score) VALUES ({name},{ending},{score})")
-        query = leaderboard.execute("SELECT * From leaderboard")
+        c.execute(f"INSERT INTO leaderboard VALUES ('{name}','{ending}','{score}')")
+        query = c.execute("SELECT * From leaderboard")
         cols = [column[0] for column in query.description]
-        #results= pd.DataFrame.from_records(data = query.fetchall(), columns = cols)
-        #print(f'Leaderboard: \n \n {results}')
-        print(f'Leaderboard: \n \n {leaderboard}')
+        results= pd.DataFrame.from_records(data = query.fetchall(), columns = cols)
+        print(f'Leaderboard: \n \n {results}')
+        #print(f'Leaderboard: \n \n {leaderboard}')
         '''
->>>>>>> Stashed changes
         Leaderboard.name.append(name)
         Leaderboard.ending.append(ending)
         Leaderboard.score.append(score)
         leaderboard = pd.DataFrame({'Name': Leaderboard.name, 'Ending': Leaderboard.ending, 'Score': Leaderboard.score})
-<<<<<<< Updated upstream
-        print(f'Leaderboard: \n \n {leaderboard}')
-=======
         '''
 
         print(f'Leaderboard: \n \n {Leaderboard.name}{Leaderboard.ending}{Leaderboard.score}')
->>>>>>> Stashed changes
 
 
 class Inventory: #Handles inventory management
